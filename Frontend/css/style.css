@@ -1,0 +1,1070 @@
+/* ==========================
+   Google Fonts
+   ========================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* ==========================
+   Design Tokens
+   ========================== */
+:root {
+    --bg: #3370ad;
+    --bg-panel: rgba(255, 255, 255, 0.22); /* Translucent white glass */
+    --bg-panel-hover: rgba(255, 255, 255, 0.32);
+    --bg-inset: rgba(255, 255, 255, 0.45);
+    --border: rgba(255, 255, 255, 0.35); /* Bright glass border */
+    --border-strong: rgba(255, 255, 255, 0.55);
+
+    /* Sky blue & Indigo accents */
+    --accent: #2b6aa6;
+    --accent-2: #468ac7;
+    --accent-hover: #1b4d7c;
+    --accent-soft: rgba(43, 106, 166, 0.08);
+    --accent-gradient: linear-gradient(135deg, #468ac7 0%, #2b6aa6 100%);
+    --accent-gradient-hover: linear-gradient(135deg, #5b9bd6 0%, #1e5285 100%);
+
+    --text: #1b3d63; /* Slate Blue for high readability in light theme */
+    --text-dim: #2e5680;
+    --text-faint: #4e78a6;
+
+    --danger: #d946ef; /* Light theme soft magenta/rose */
+    --danger-soft: rgba(217, 70, 239, 0.1);
+    --success: #059669;
+    --success-soft: rgba(5, 150, 105, 0.1);
+
+    --radius: 16px;
+    --radius-lg: 22px; /* 20-24px rounded corners */
+    --radius-sm: 12px;
+
+    --shadow-sm: 0 4px 12px rgba(27, 61, 99, 0.06);
+    --shadow-md: 0 16px 36px rgba(27, 61, 99, 0.12);
+    --shadow-card: 0 12px 32px rgba(27, 61, 99, 0.08);
+
+    --glass-bg: rgba(255, 255, 255, 0.22);
+    --glass-border: rgba(255, 255, 255, 0.35);
+
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Poppins', sans-serif;
+}
+
+/* ==========================
+   Reset & Base Layout
+   ========================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+body {
+    background: var(--bg);
+    font-family: var(--font-body);
+    color: var(--text-dim);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 24px 80px;
+    position: relative;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Clean body pseudo-elements to remove old dark orbs */
+body::before,
+body::after {
+    content: none !important;
+}
+
+/* ==========================
+   Ambient Sky Background Scene
+   (Reactivating elements #bgGrid and #scanlines injected by app.js)
+   ========================== */
+#bgGrid {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    pointer-events: none;
+    overflow: hidden;
+    /* Layered landscape: sky gradient, stars, glowing moon, and silhouette hills */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800' preserveAspectRatio='xMidYMax slice'%3E%3Cdefs%3E%3ClinearGradient id='sky' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%231b487c'/%3E%3Cstop offset='35%25' stop-color='%233370ad'/%3E%3Cstop offset='70%25' stop-color='%23639ed6'/%3E%3Cstop offset='100%25' stop-color='%23a4d0f4'/%3E%3C/linearGradient%3E%3ClinearGradient id='hFar' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%233878b6' stop-opacity='0.45'/%3E%3Cstop offset='100%25' stop-color='%235492d1' stop-opacity='0.8'/%3E%3C/linearGradient%3E%3ClinearGradient id='hMid' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%2328639e' stop-opacity='0.65'/%3E%3Cstop offset='100%25' stop-color='%234582c0' stop-opacity='0.9'/%3E%3C/linearGradient%3E%3ClinearGradient id='hClose' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23194b80'/%3E%3Cstop offset='100%25' stop-color='%232a67a5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23sky)'/%3E%3Ccircle cx='900' cy='180' r='2' fill='%23fff' opacity='0.75'/%3E%3Ccircle cx='300' cy='120' r='1.5' fill='%23fff' opacity='0.5'/%3E%3Ccircle cx='100' cy='220' r='1' fill='%23fff' opacity='0.4'/%3E%3Ccircle cx='550' cy='80' r='2' fill='%23fff' opacity='0.8'/%3E%3Ccircle cx='780' cy='250' r='1.2' fill='%23fff' opacity='0.6'/%3E%3Ccircle cx='800' cy='150' r='26' fill='%23fff' opacity='0.9'/%3E%3Ccircle cx='800' cy='150' r='40' fill='%23fff' opacity='0.15'/%3E%3Cpath d='M-100 520 Q 200 370 500 470 T 1100 420 T 1400 450 L 1400 900 L -100 900 Z' fill='url(%23hFar)'/%3E%3Cpath d='M-50 580 Q 300 430 650 530 T 1350 470 L 1350 900 L -50 900 Z' fill='url(%23hMid)'/%3E%3Cpath d='M-50 650 Q 400 550 800 610 T 1300 590 L 1300 900 L -50 900 Z' fill='url(%23hClose)'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+}
+
+#bgGrid::before,
+#bgGrid::after {
+    content: none !important;
+}
+
+#scanlines {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    z-index: -9;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Floating Cloud 1 (Left to Right) */
+#scanlines::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: -250px;
+    width: 250px;
+    height: 120px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' fill='%23ffffff' opacity='0.22'%3E%3Cpath d='M18 48 a15 15 0 0 1 15 -15 a18 18 0 0 1 30 -5 a16 16 0 0 1 25 5 a12 12 0 0 1 10 15 z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    animation: floatCloud1 90s linear infinite;
+}
+
+/* Floating Cloud 2 (Right to Left) */
+#scanlines::after {
+    content: '';
+    position: absolute;
+    top: 25%;
+    right: -200px;
+    width: 200px;
+    height: 100px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' fill='%23ffffff' opacity='0.16'%3E%3Cpath d='M18 48 a15 15 0 0 1 15 -15 a18 18 0 0 1 30 -5 a16 16 0 0 1 25 5 a12 12 0 0 1 10 15 z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    animation: floatCloud2 70s linear infinite;
+}
+
+@keyframes floatCloud1 {
+    0% { left: -250px; }
+    100% { left: 100%; }
+}
+
+@keyframes floatCloud2 {
+    0% { right: -200px; }
+    100% { right: 100%; }
+}
+
+/* ==========================
+   Navigation Bar (White Glass)
+   ========================== */
+#mainNav {
+    position: sticky;
+    top: 20px;
+    z-index: 1000;
+    width: 100%;
+    max-width: 1100px;
+    margin: 20px auto 40px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#mainNav .logo {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 21px;
+    color: var(--text);
+    text-decoration: none;
+    background: linear-gradient(135deg, #1b3d63 0%, #2b6aa6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+#mainNav .logo:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+}
+
+#mainNav .nav-link {
+    color: var(--text);
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13.5px;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-radius: 99px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    background: transparent;
+}
+
+#mainNav .nav-link:hover {
+    color: var(--accent);
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+/* ==========================
+   Typography & Headers
+   ========================== */
+h1 {
+    font-family: var(--font-display);
+    color: #ffffff;
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 44px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    text-shadow: 0 2px 10px rgba(27, 61, 99, 0.2);
+}
+
+h2 {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: center;
+    color: var(--text);
+    letter-spacing: -0.02em;
+}
+
+h3 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+/* ==========================
+   Hero Section (Index Page)
+   ========================== */
+#heroSection {
+    text-align: center;
+    max-width: 800px;
+    margin: 80px auto 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero-sub {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 40px;
+    max-width: 600px;
+    line-height: 1.5;
+    text-shadow: 0 1px 4px rgba(27, 61, 99, 0.15);
+}
+
+#ctaButtons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Landing CTA buttons visual hierarchy */
+#ctaButtons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    border-radius: 99px; /* Pill buttons */
+    text-decoration: none;
+    font-size: 14.5px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#ctaButtons a[href="signup.html"] {
+    background: #ffffff;
+    color: var(--accent);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 6px 16px rgba(27, 61, 99, 0.08);
+}
+
+#ctaButtons a[href="signup.html"]:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(27, 61, 99, 0.12);
+}
+
+#ctaButtons a[href="login.html"],
+#ctaButtons a[href="events.html"] {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+#ctaButtons a[href="login.html"]:hover,
+#ctaButtons a[href="events.html"]:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+/* ==========================
+   Translucent Form Glass Cards
+   ========================== */
+#authCard,
+#hostEventForm,
+#editEventForm {
+    background: rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    width: 100%;
+    max-width: 460px;
+    padding: 44px 40px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    margin: 40px auto;
+    position: relative;
+    overflow: hidden;
+}
+
+#authCard h2 {
+    color: #ffffff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 26px;
+    text-shadow: 0 2px 8px rgba(27, 61, 99, 0.15);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.form-error {
+    background: rgba(217, 70, 239, 0.12);
+    border: 1px solid rgba(217, 70, 239, 0.3);
+    color: #d946ef;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.inline-link {
+    display: block;
+    text-align: center;
+    margin-top: 24px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: underline;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.inline-link:hover {
+    color: #ffffff;
+}
+
+/* ==========================
+   White Pill Inputs & Controls
+   ========================== */
+input,
+textarea {
+    width: 100%;
+    padding: 13px 16px 13px 46px;
+    background: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 99px; /* Pill inputs */
+    font-size: 14px;
+    font-family: var(--font-body);
+    color: var(--text);
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    background-repeat: no-repeat;
+    background-position: 18px center;
+    background-size: 16px 16px;
+    box-shadow: inset 0 2px 4px rgba(27, 61, 99, 0.03);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #8fa0b5;
+}
+
+textarea {
+    border-radius: var(--radius);
+    padding-left: 18px;
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Input SVG icon overrides in light slate/blue color */
+input[type="email"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232b6aa6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='20' height='16' x='2' y='4' rx='2'/%3E%3Cpath d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'/%3E%3C/svg%3E");
+}
+
+input[type="password"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232b6aa6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='11' x='3' y='11' rx='2' ry='2'/%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'/%3E%3C/svg%3E");
+}
+
+input[type="text"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232b6aa6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E");
+}
+
+input[type="search"],
+#eventSearch {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232b6aa6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
+}
+
+#eventSearch {
+    max-width: 440px;
+    margin: 24px auto 0;
+    display: block;
+    padding-left: 46px;
+    background-color: #ffffff;
+    box-shadow: var(--shadow-sm);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+input[type="date"] {
+    padding-left: 18px;
+}
+
+input[type="number"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232b6aa6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3C/svg%3E");
+}
+
+input:hover,
+textarea:hover {
+    border-color: rgba(43, 106, 166, 0.4);
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--accent);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(43, 106, 166, 0.25);
+}
+
+.password-field {
+    position: relative;
+    width: 100%;
+}
+
+.password-field input {
+    padding-right: 44px;
+}
+
+#togglePassword {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+    opacity: 0.6;
+    font-size: 16px;
+    transition: opacity 0.2s ease;
+    color: var(--accent);
+}
+
+#togglePassword:hover {
+    opacity: 1;
+}
+
+/* Sky blue date picker indicator accent override */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.35) sepia(1) saturate(5) hue-rotate(185deg);
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* ==========================
+   Button Styling (White Pills for forms)
+   ========================== */
+form button[type="submit"] {
+    width: 100%;
+    padding: 13px 24px;
+    background: #ffffff;
+    color: var(--accent);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 99px; /* Pill submit buttons */
+    cursor: pointer;
+    font-size: 14.5px;
+    font-weight: 700;
+    font-family: var(--font-body);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-top: 8px;
+    box-shadow: 0 6px 16px rgba(27, 61, 99, 0.08);
+}
+
+form button[type="submit"]:hover {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--accent-hover);
+    box-shadow: 0 8px 20px rgba(27, 61, 99, 0.12);
+    transform: translateY(-2px);
+}
+
+form button[type="submit"]:active {
+    transform: scale(0.98);
+}
+
+/* White glass outline/back buttons outside nav */
+a:not(.logo):not(.nav-link) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 22px;
+    font-size: 13.5px;
+    font-weight: 600;
+    border-radius: 99px; /* Pill anchors */
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    text-decoration: none;
+    text-shadow: 0 1px 2px rgba(27, 61, 99, 0.1);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+a:not(.logo):not(.nav-link):hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(27, 61, 99, 0.08);
+}
+
+/* Host Event anchor styled as primary button */
+a[href="host.html"] {
+    background: var(--accent-gradient) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgba(43, 106, 166, 0.2);
+    text-shadow: none;
+}
+
+a[href="host.html"]:hover {
+    background: var(--accent-gradient-hover) !important;
+    box-shadow: 0 8px 20px rgba(43, 106, 166, 0.3);
+    transform: translateY(-2px);
+}
+
+/* ==========================
+   Page Layout Containment
+   ========================== */
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+#eventsHero {
+    width: 100%;
+    max-width: 1100px;
+    text-align: center;
+    margin: 20px auto 40px;
+}
+
+/* ==========================
+   Spinners & Loaders
+   ========================== */
+#eventsLoader,
+#dashboardLoader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 0;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--accent);
+    animation: spin 0.8s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================
+   Event Cards (Clean Glassmorphic Panels)
+   ========================== */
+#eventsContainer,
+#dashboardContainer,
+#myEventsContainer {
+    width: 100%;
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin: 20px auto 40px;
+}
+
+.event-card {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    text-align: left;
+    box-shadow: var(--shadow-card);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    will-change: transform, opacity;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes cardIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.event-card:hover {
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 20px 45px rgba(27, 61, 99, 0.15), 0 0 20px rgba(255, 255, 255, 0.2);
+    transform: translateY(-6px);
+}
+
+.event-card:has(h2) {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+}
+
+/* Date Pill Badge at top of card */
+.event-card:has(h2) p:nth-of-type(2) {
+    order: 1;
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    background: rgba(43, 106, 166, 0.08);
+    border: 1px solid rgba(43, 106, 166, 0.15);
+    color: var(--accent);
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 11.5px;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+}
+
+/* Hide raw text strong tag */
+.event-card:has(h2) p:nth-of-type(2) strong {
+    display: none;
+}
+
+.event-card h2 {
+    order: 2;
+    color: var(--text);
+    margin: 0 0 12px 0;
+    text-align: left;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+}
+
+.event-card:has(h2) p:nth-of-type(1) {
+    order: 3;
+    margin: 0 0 20px 0;
+    color: var(--text-dim);
+    font-size: 13.5px;
+    line-height: 1.6;
+    min-height: 44px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Venue Icon Details row */
+.event-card:has(h2) p:nth-of-type(3) {
+    order: 4;
+    display: flex;
+    align-items: center;
+    margin: 0 0 10px 0;
+    font-size: 13px;
+    color: var(--text-dim);
+}
+
+.event-card:has(h2) p:nth-of-type(3) strong {
+    display: none;
+}
+
+.event-card:has(h2) p:nth-of-type(3)::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 8px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232b6aa6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+/* Seats indicator Badge */
+.event-card:has(h2) p:nth-of-type(4) {
+    order: 5;
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-dim);
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.event-card:has(h2) p:nth-of-type(4) strong {
+    color: var(--text);
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+.event-card:has(h2) p:nth-of-type(4)::before {
+    content: '';
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    margin-right: 6px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23468ac7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+/* Card Button positioning */
+.event-card button:not([onclick]) {
+    order: 6;
+    margin-top: 24px;
+    background: var(--accent-gradient);
+    color: #ffffff;
+    border-radius: 99px; /* Pill card buttons */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(43, 106, 166, 0.2);
+}
+
+.event-card button:not([onclick]):hover {
+    background: var(--accent-gradient-hover);
+    box-shadow: 0 8px 20px rgba(43, 106, 166, 0.3);
+    transform: translateY(-2px);
+}
+
+/* ==========================
+   Actions Layout overrides
+   ========================== */
+
+/* Cancel Registration Button (Dashboard) */
+button[onclick*="cancelRegistration"] {
+    order: 6;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(43, 106, 166, 0.2);
+    color: var(--accent);
+    box-shadow: none;
+    margin-top: 24px;
+    border-radius: 99px;
+}
+
+button[onclick*="cancelRegistration"]:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: var(--accent);
+    color: var(--accent-hover);
+    transform: translateY(-2px);
+}
+
+/* Split-layout grid buttons for Hosted Events */
+.event-card:has(button[onclick*="editEvent"]) {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.event-card:has(button[onclick*="editEvent"]) h2,
+.event-card:has(button[onclick*="editEvent"]) p,
+.event-card:has(button[onclick*="editEvent"]) button[onclick*="viewRegistrations"] {
+    grid-column: 1 / -1;
+}
+
+.event-card:has(button[onclick*="editEvent"]) button[onclick*="viewRegistrations"] {
+    order: 6;
+    margin-top: 20px;
+    margin-bottom: 0;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(43, 106, 166, 0.2);
+    color: var(--accent);
+    box-shadow: none;
+    border-radius: 99px;
+}
+
+.event-card:has(button[onclick*="editEvent"]) button[onclick*="viewRegistrations"]:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.event-card:has(button[onclick*="editEvent"]) button[onclick*="editEvent"] {
+    order: 7;
+    grid-column: 1 / 2;
+    margin-top: 0;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(43, 106, 166, 0.2);
+    color: var(--accent);
+    box-shadow: none;
+    border-radius: 99px;
+}
+
+.event-card:has(button[onclick*="editEvent"]) button[onclick*="editEvent"]:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.event-card:has(button[onclick*="editEvent"]) button[onclick*="deleteEvent"] {
+    order: 8;
+    grid-column: 2 / 3;
+    margin-top: 0;
+    background: rgba(217, 70, 239, 0.08);
+    border: 1px solid rgba(217, 70, 239, 0.2);
+    color: #d946ef;
+    box-shadow: none;
+    border-radius: 99px;
+}
+
+.event-card:has(button[onclick*="editEvent"]) button[onclick*="deleteEvent"]:hover {
+    background: rgba(217, 70, 239, 0.15);
+    border-color: #d946ef;
+    transform: translateY(-2px);
+}
+
+/* Participant list styling (registrations.html) */
+.event-card:has(h3) {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.event-card:has(h3) h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 8px;
+}
+
+.event-card:has(h3) p {
+    margin: 4px 0;
+    font-size: 13px;
+    color: var(--text-dim);
+}
+
+.event-card:has(h3) p strong {
+    color: var(--text);
+}
+
+/* ==========================
+   Empty Dashboard State
+   ========================== */
+#emptyState {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px dashed rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-lg);
+    padding: 60px 40px;
+    max-width: 500px;
+    margin: 40px auto;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+#emptyState p {
+    font-family: var(--font-body);
+    font-size: 15.5px;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(27, 61, 99, 0.2);
+    margin: 0 0 24px 0;
+}
+
+#emptyState a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    border-radius: 99px;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    background: #ffffff;
+    color: var(--accent);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 12px rgba(27, 61, 99, 0.08);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#emptyState a:hover {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 6px 16px rgba(27, 61, 99, 0.12);
+    transform: translateY(-2px);
+}
+
+/* ==========================
+   Logout Button
+   ========================== */
+.logout-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    max-width: 200px;
+    margin: 30px auto 0;
+    box-shadow: none;
+    font-size: 13.5px;
+    padding: 12px 24px;
+    border-radius: 99px;
+    text-shadow: 0 1px 2px rgba(27, 61, 99, 0.1);
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #ffffff;
+    box-shadow: var(--shadow-sm);
+    filter: none;
+    transform: translateY(-2px);
+}
+
+/* ==========================
+   Toasts Notification Overlay
+   ========================== */
+#toastContainer {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1001;
+}
+
+.toast {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-left: 4px solid var(--accent);
+    color: var(--text);
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(27, 61, 99, 0.1);
+    min-width: 280px;
+    max-width: 380px;
+    animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast.success {
+    border-left-color: var(--success);
+}
+
+.toast.error {
+    border-left-color: var(--danger);
+}
+
+@keyframes toastIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ==========================
+   Responsive Adaptation
+   ========================== */
+@media (max-width: 768px) {
+    body {
+        padding: 0 16px 60px;
+    }
+    #mainNav {
+        top: 10px;
+        margin-bottom: 24px;
+        padding: 10px 16px;
+    }
+    h1 {
+        font-size: 32px;
+    }
+    #authCard,
+    #hostEventForm,
+    #editEventForm {
+        padding: 32px 24px;
+        margin: 20px auto;
+    }
+    #eventsContainer,
+    #dashboardContainer,
+    #myEventsContainer {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .event-card,
+    button,
+    a,
+    #scanlines::before,
+    #scanlines::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<nav id="mainNav">
+    <a href="index.html" class="logo">✦ NexMeet</a>
+</nav>
+
+<div id="authCard">
+    <h2>Login</h2>
+
+    <div id="loginError" class="form-error" hidden></div>
+
+    <form id="loginForm">
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Email"
+            required
+        >
+
+        <div class="password-field">
+            <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                required
+            >
+            <span id="togglePassword">👁</span>
+        </div>
+
+        <button type="submit">
+            Login
+        </button>
+
+    </form>
+
+    <a href="signup.html" class="inline-link">
+        Don't have an account? Signup
+    </a>
+</div>
+
+<div id="toastContainer"></div>
+
+<script src="js/app.js"></script>
+
+</body>
+
+</html>

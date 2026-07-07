@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Host Event</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <h1>Host a New Event</h1>
+
+    <form id="hostEventForm">
+
+        <input
+            type="text"
+            id="title"
+            placeholder="Event Title"
+            required
+        >
+
+        <textarea
+            id="description"
+            placeholder="Event Description"
+            required
+        ></textarea>
+
+        <input
+            type="date"
+            id="date"
+            required
+        >
+
+        <input
+            type="text"
+            id="venue"
+            placeholder="Venue"
+            required
+        >
+
+        <input
+            type="number"
+            id="seats"
+            placeholder="Seats"
+            required
+        >
+
+        <button type="submit">
+            Create Event
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="events.html">← Back to Events</a>
+
+    <script src="js/app.js"></script>
+    <br>
+
+<a href="myEvents.html">View My Hosted Events</a>
+
+</body>
+</html>
