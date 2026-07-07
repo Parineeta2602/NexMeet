@@ -1,6 +1,6 @@
 console.log("app.js loaded");
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://nexmeet-backend-2hqz.onrender.com//api";
 
 // ======================
 // AMBIENT BACKGROUND (soft glow layer, injected on every page)
@@ -384,7 +384,7 @@ if (hostEventForm) {
         try {
 
             const response = await fetch(
-                "http://localhost:5000/api/events/create",
+                "https://nexmeet-backend-2hqz.onrender.com//api/events/create",
                 {
                     method: "POST",
 
@@ -430,7 +430,7 @@ async function loadHostedEvents() {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-        "http://localhost:5000/api/events/my-events",
+        "https://nexmeet-backend-2hqz.onrender.com//api/events/my-events",
         {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -483,7 +483,7 @@ async function deleteEvent(eventId) {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-        `http://localhost:5000/api/events/${eventId}`,
+        `https://nexmeet-backend-2hqz.onrender.com//api/events/${eventId}`,
         {
             method: "DELETE",
             headers: {
@@ -516,7 +516,7 @@ async function loadEventDetails() {
 
     const eventId = localStorage.getItem("editEventId");
 
-    const response = await fetch("http://localhost:5000/api/events");
+    const response = await fetch("https://nexmeet-backend-2hqz.onrender.com//api/events");
 
     const events = await response.json();
 
@@ -545,7 +545,7 @@ async function updateEvent(e) {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-        `http://localhost:5000/api/events/${eventId}`,
+        `https://nexmeet-backend-2hqz.onrender.com//api/events/${eventId}`,
         {
             method: "PUT",
             headers: {
@@ -591,7 +591,7 @@ async function loadRegistrations() {
     try {
 
         const response = await fetch(
-            `http://localhost:5000/api/events/${eventId}/registrations`,
+            `https://nexmeet-backend-2hqz.onrender.com//api/events/${eventId}/registrations`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
