@@ -261,6 +261,155 @@ const cancelRegistration = async (req, res) => {
     }
 };
 
+// Mark event as completed
+const completeEvent = async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.id);
+
+        if (!event) {
+            return res.status(404).json({
+                message: "Event not found"
+            });
+        }
+
+        if (event.createdBy.toString() !== req.user.id) {
+            return res.status(403).json({
+                message: "Not authorized"
+            });
+        }
+
+        event.status = "completed";
+        await event.save();
+
+        res.status(200).json({
+            message: "Event marked as completed",
+            event
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
+
+// Add past event summary, highlights and photos
+const updatePastEvent = async (req, res) => {
+    try {
+        const {
+            summary,
+            highlights,
+            photos
+        } = req.body;
+
+        const event = await Event.findById(req.params.id);
+
+        if (!event) {
+            return res.status(404).json({
+                message: "Event not found"
+            });
+        }
+
+        if (event.createdBy.toString() !== req.user.id) {
+            return res.status(403).json({
+                message: "Not authorized"
+            });
+        }
+
+        if (event.status !== "completed") {
+            return res.status(400).json({
+                message: "Only completed events can have past-event details."
+            });
+        }
+
+        event.pastEvent.summary = summary || "";
+
+        event.pastEvent.highlights =
+            Array.isArray(highlights) ? highlights : [];
+
+        event.pastEvent.photos =
+            Array.isArray(photos) ? photos : [];
+
+        await event.save();
+
+        res.status(200).json({
+            message: "Past event details updated",
+            event
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
+
+// Publish past event
+const publishPastEvent = async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.id);
+
+        if (!event) {
+            return res.status(404).json({
+                message: "Event not found"
+            });
+        }
+
+        if (event.createdBy.toString() !== req.user.id) {
+            return res.status(403).json({
+                message: "Not authorized"
+            });
+        }
+
+        if (event.status !== "completed") {
+            return res.status(400).json({
+                message: "Complete the event before publishing it."
+            });
+        }
+
+        if (!event.pastEvent.summary) {
+            return res.status(400).json({
+                message: "Please add an event summary first."
+            });
+        }
+
+        event.pastEvent.published = true;
+
+        await event.save();
+
+        res.status(200).json({
+            message: "Past event published successfully",
+            event
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
+
+// Get published past events
+const getPastEvents = async (req, res) => {
+    try {
+        const events = await Event.find({
+            status: "completed",
+            "pastEvent.published": true
+        })
+        .populate("createdBy", "name");
+
+        res.status(200).json(events);
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
 module.exports = {
     createEvent,
     getAllEvents,
@@ -270,6 +419,10 @@ module.exports = {
     deleteEvent,
     updateEvent,
     getEventRegistrations,
-    cancelRegistration
-};
+    cancelRegistration,
 
+    completeEvent,
+    updatePastEvent,
+    publishPastEvent,
+    getPastEvents
+};

@@ -10,13 +10,25 @@ const {
     deleteEvent,
     updateEvent,
     getEventRegistrations,
-    cancelRegistration
+    cancelRegistration,
+    completeEvent,
+    updatePastEvent,
+    publishPastEvent,
+    getPastEvents
 } = require("../controllers/eventController");
 
-const authMiddleware = require("../middleware/authMiddleware");
+const {
+    authMiddleware,
+    requireRole
+} = require("../middleware/authMiddleware");
 
 // Create Event
-router.post("/create", authMiddleware, createEvent);
+router.post(
+    "/create",
+    authMiddleware,
+    requireRole("host"),
+    createEvent
+);
 
 // View All Events
 router.get("/", getAllEvents);
@@ -30,24 +42,66 @@ router.get("/my-registrations", authMiddleware, getMyRegistrations);
 router.get(
     "/my-events",
     authMiddleware,
+    requireRole("host"),
     getHostedEvents
 );
 
-// Delete Event
-router.delete("/:id", authMiddleware, deleteEvent);
+router.delete(
+    "/:id",
+    authMiddleware,
+    requireRole("host"),
+    deleteEvent
+);
 
-// Update Event
-router.put("/:id", authMiddleware, updateEvent);
+router.put(
+    "/:id",
+    authMiddleware,
+    requireRole("host"),
+    updateEvent
+);
 
 router.get(
     "/:id/registrations",
     authMiddleware,
+    requireRole("host"),
     getEventRegistrations
 );
+
 router.delete(
     "/cancel/:id",
     authMiddleware,
     cancelRegistration
+);
+
+// ===============================
+// PAST EVENT ROUTES
+// ===============================
+
+// Users can view published past events
+router.get("/past", getPastEvents);
+
+// Host marks event as completed
+router.patch(
+    "/:id/complete",
+    authMiddleware,
+    requireRole("host"),
+    completeEvent
+);
+
+// Host adds summary, highlights and photos
+router.patch(
+    "/:id/past-details",
+    authMiddleware,
+    requireRole("host"),
+    updatePastEvent
+);
+
+// Host publishes past event
+router.patch(
+    "/:id/publish-past",
+    authMiddleware,
+    requireRole("host"),
+    publishPastEvent
 );
 
 module.exports = router;

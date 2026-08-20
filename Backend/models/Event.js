@@ -29,7 +29,39 @@ const eventSchema = new mongoose.Schema({
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        required: true
+    },
+
+    // Event lifecycle
+    status: {
+        type: String,
+        enum: ["upcoming", "ongoing", "completed"],
+        default: "upcoming"
+    },
+
+    // Past event information
+    pastEvent: {
+        summary: {
+            type: String,
+            default: ""
+        },
+
+        highlights: {
+            type: [String],
+            default: []
+        },
+
+        photos: {
+            type: [String],
+            default: []
+        },
+
+        published: {
+            type: Boolean,
+            default: false
+        }
     }
+
 }, {
     timestamps: true
 });

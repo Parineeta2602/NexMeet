@@ -16,10 +16,26 @@ const authMiddleware = (req, res, next) => {
         req.user = verified;
         next();
     } catch (error) {
-        res.status(401).json({
+        return res.status(401).json({
             message: "Invalid Token"
         });
     }
 };
 
-module.exports = authMiddleware;
+// Role-based authorization
+const requireRole = (...allowedRoles) => {
+    return (req, res, next) => {
+        if (!req.user || !allowedRoles.includes(req.user.role)) {
+            return res.status(403).json({
+                message: "Access denied. You do not have permission."
+            });
+        }
+
+        next();
+    };
+};
+
+module.exports = {
+    authMiddleware,
+    requireRole
+};
