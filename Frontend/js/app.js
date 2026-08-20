@@ -574,6 +574,8 @@ function renderCompletedHostEvents(events, container) {
                 <button onclick='openMemoriesModal(${JSON.stringify(event)})'>
                     ${hasSummary ? "Edit Memories" : "Add Event Memories"}
                 </button>
+                <button onclick="viewRegistrations('${event._id}')">View Registrations</button>
+                <button onclick="deleteEvent('${event._id}')">Delete</button>
             </div>
         `;
     });
@@ -594,6 +596,8 @@ function renderPublishedHostEvents(events, container) {
 
                 <button onclick="viewPastEvent('${event._id}')">View Memories</button>
                 <button onclick='openMemoriesModal(${JSON.stringify(event)})'>Edit Memories</button>
+                <button onclick="viewRegistrations('${event._id}')">View Registrations</button>
+                <button onclick="deleteEvent('${event._id}')">Delete</button>
             </div>
         `;
     });
