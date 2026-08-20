@@ -1200,6 +1200,10 @@ button[onclick*="cancelRegistration"]:hover {
     padding: 20px;
 }
 
+.modal-overlay[hidden] {
+    display: none;
+}
+
 .modal-card {
     background: #ffffff;
     border-radius: var(--radius-lg);
