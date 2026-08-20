@@ -14,7 +14,8 @@
 </nav>
 
 <div id="authCard">
-    <h2>Signup</h2>
+    <h2 id="authHeading">Signup</h2>
+    <p id="roleSubtext" class="role-subtext"></p>
 
     <div id="signupError" class="form-error" hidden></div>
 
@@ -50,7 +51,7 @@
 
     </form>
 
-    <a href="login.html" class="inline-link">
+    <a id="loginLink" href="login.html" class="inline-link">
         Already have an account? Login
     </a>
 </div>
@@ -58,6 +59,7 @@
 <div id="toastContainer"></div>
 
 <script src="js/app.js"></script>
+<script>initAuthPage("signup");</script>
 
 </body>
 

@@ -41,6 +41,42 @@ function showToast(message, type = "info") {
 }
 
 // ======================
+// ROLE-AWARE AUTH PAGE SETUP (login.html / signup.html)
+// ======================
+function getRoleFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    const role = params.get("role");
+    return role === "host" ? "host" : "user";
+}
+
+function initAuthPage(pageType) {
+    const role = getRoleFromQuery();
+    const heading = document.getElementById("authHeading");
+    const subtext = document.getElementById("roleSubtext");
+
+    const roleLabel = role === "host" ? "Host" : "User";
+
+    if (heading) {
+        heading.textContent =
+            (pageType === "login" ? "Login" : "Signup") + " — " + roleLabel + " Portal";
+    }
+
+    if (subtext) {
+        subtext.textContent =
+            role === "host"
+                ? "Create and manage your own events."
+                : "Browse and register for events.";
+    }
+
+    // Preserve role when hopping between login <-> signup
+    const signupLink = document.getElementById("signupLink");
+    if (signupLink) signupLink.href = `signup.html?role=${role}`;
+
+    const loginLink = document.getElementById("loginLink");
+    if (loginLink) loginLink.href = `login.html?role=${role}`;
+}
+
+// ======================
 // PASSWORD TOGGLE
 // ======================
 const togglePassword = document.getElementById("togglePassword");
@@ -66,6 +102,7 @@ if (signupForm) {
         const name = document.getElementById("name").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
+        const role = getRoleFromQuery();
         const errorBox = document.getElementById("signupError");
 
         try {
@@ -77,7 +114,8 @@ if (signupForm) {
                 body: JSON.stringify({
                     name,
                     email,
-                    password
+                    password,
+                    role
                 })
             });
 
@@ -85,7 +123,7 @@ if (signupForm) {
 
             if (response.ok) {
                 showToast(data.message || "Account created!", "success");
-                window.location.href = "login.html";
+                window.location.href = `login.html?role=${role}`;
             } else {
                 showFormError(errorBox, data.message || "Signup failed.");
             }
@@ -108,6 +146,7 @@ if (loginForm) {
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
         const errorBox = document.getElementById("loginError");
+        const selectedRole = getRoleFromQuery();
 
         try {
             const response = await fetch(`${API_BASE}/users/login`, {
@@ -124,9 +163,26 @@ if (loginForm) {
             const data = await response.json();
 
             if (response.ok) {
+                const actualRole = data.user?.role || "user";
+
+                if (actualRole !== selectedRole) {
+                    showFormError(
+                        errorBox,
+                        `This account is registered as a ${actualRole}. Please use the ${actualRole} portal.`
+                    );
+                    return;
+                }
+
                 localStorage.setItem("token", data.token);
+                localStorage.setItem("role", actualRole);
+                localStorage.setItem("userName", data.user?.name || "");
+
                 showToast("Login successful!", "success");
-                window.location.href = "events.html";
+
+                setTimeout(() => {
+                    window.location.href =
+                        actualRole === "host" ? "hostDashboard.html" : "events.html";
+                }, 500);
             } else {
                 showFormError(errorBox, data.message || "Login failed.");
             }
@@ -355,6 +411,8 @@ if (logoutBtn) {
 
 function logout() {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userName");
     showToast("Logged out successfully", "success");
     setTimeout(() => {
         window.location.href = "login.html";
@@ -419,9 +477,9 @@ if (hostEventForm) {
 
 }
 
-const myEventsContainer = document.getElementById("myEventsContainer");
+const myEventsRootCheck = document.getElementById("upcomingEventsContainer");
 
-if (myEventsContainer) {
+if (myEventsRootCheck) {
     loadHostedEvents();
 }
 
@@ -429,49 +487,401 @@ async function loadHostedEvents() {
 
     const token = localStorage.getItem("token");
 
-    const response = await fetch(
-        "https://nexmeet-backend-2hqz.onrender.com/api/events/my-events",
-        {
-            headers: {
-                Authorization: `Bearer ${token}`
+    const upcomingContainer = document.getElementById("upcomingEventsContainer");
+    const completedContainer = document.getElementById("completedEventsContainer");
+    const pastContainer = document.getElementById("pastEventsContainer");
+
+    try {
+        const response = await fetch(
+            `${API_BASE}/events/my-events`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             }
+        );
+
+        const events = await response.json();
+
+        if (!Array.isArray(events)) {
+            showToast(events.message || "Could not load your events.", "error");
+            return;
         }
-    );
 
-    const events = await response.json();
+        const upcoming = events.filter(e => e.status !== "completed");
+        const completedUnpublished = events.filter(
+            e => e.status === "completed" && !e.pastEvent?.published
+        );
+        const publishedPast = events.filter(
+            e => e.status === "completed" && e.pastEvent?.published
+        );
 
-    myEventsContainer.innerHTML = "";
+        renderUpcomingHostEvents(upcoming, upcomingContainer);
+        renderCompletedHostEvents(completedUnpublished, completedContainer);
+        renderPublishedHostEvents(publishedPast, pastContainer);
+
+        toggleEmptyMsg("upcomingEmptyMsg", upcoming.length === 0);
+        toggleEmptyMsg("completedEmptyMsg", completedUnpublished.length === 0);
+        toggleEmptyMsg("pastEmptyMsg", publishedPast.length === 0);
+
+    } catch (error) {
+        console.error(error);
+        showToast("Could not load your events.", "error");
+    }
+}
+
+function toggleEmptyMsg(id, show) {
+    const el = document.getElementById(id);
+    if (el) el.hidden = !show;
+}
+
+function renderUpcomingHostEvents(events, container) {
+    if (!container) return;
+    container.innerHTML = "";
 
     events.forEach(event => {
-
-        myEventsContainer.innerHTML += `
+        container.innerHTML += `
             <div class="event-card">
                 <h2>${event.title}</h2>
-
                 <p>${event.description}</p>
-
                 <p><strong>Date:</strong> ${new Date(event.date).toLocaleDateString()}</p>
-
                 <p><strong>Venue:</strong> ${event.venue}</p>
-
                 <p><strong>Seats:</strong> ${event.seats}</p>
 
-                <button onclick="editEvent('${event._id}')">
-                    Edit
-                </button>
-
-                <button onclick="deleteEvent('${event._id}')">
-                    Delete
-                </button>
-
-                <button onclick="viewRegistrations('${event._id}')">
-                    View Registrations
-                </button>
-
+                <button onclick="editEvent('${event._id}')">Edit</button>
+                <button onclick="deleteEvent('${event._id}')">Delete</button>
+                <button onclick="viewRegistrations('${event._id}')">View Registrations</button>
+                <button onclick="markCompleted('${event._id}')">Mark Completed</button>
             </div>
         `;
     });
+}
 
+function renderCompletedHostEvents(events, container) {
+    if (!container) return;
+    container.innerHTML = "";
+
+    events.forEach(event => {
+        const hasSummary = !!event.pastEvent?.summary;
+
+        container.innerHTML += `
+            <div class="event-card">
+                <h2>${event.title}</h2>
+                <p><strong>Date:</strong> ${new Date(event.date).toLocaleDateString()}</p>
+                <p><strong>Venue:</strong> ${event.venue}</p>
+                <p class="status-badge">${hasSummary ? "Draft saved" : "No memories yet"}</p>
+
+                <button onclick='openMemoriesModal(${JSON.stringify(event)})'>
+                    ${hasSummary ? "Edit Memories" : "Add Event Memories"}
+                </button>
+            </div>
+        `;
+    });
+}
+
+function renderPublishedHostEvents(events, container) {
+    if (!container) return;
+    container.innerHTML = "";
+
+    events.forEach(event => {
+        const photoCount = event.pastEvent?.photos?.length || 0;
+
+        container.innerHTML += `
+            <div class="event-card">
+                <h2>${event.title}</h2>
+                <p><strong>Date:</strong> ${new Date(event.date).toLocaleDateString()}</p>
+                <p>📸 ${photoCount} Photos · 📝 Summary Added</p>
+
+                <button onclick="viewPastEvent('${event._id}')">View Memories</button>
+                <button onclick='openMemoriesModal(${JSON.stringify(event)})'>Edit Memories</button>
+            </div>
+        `;
+    });
+}
+
+// ======================
+// MARK EVENT COMPLETED
+// ======================
+async function markCompleted(eventId) {
+
+    const confirmComplete = confirm("Mark this event as completed?");
+    if (!confirmComplete) return;
+
+    const token = localStorage.getItem("token");
+
+    try {
+        const response = await fetch(
+            `${API_BASE}/events/${eventId}/complete`,
+            {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        const data = await response.json();
+        showToast(data.message, response.ok ? "success" : "error");
+
+        if (response.ok) {
+            loadHostedEvents();
+        }
+    } catch (error) {
+        console.error(error);
+        showToast("Could not mark event as completed.", "error");
+    }
+}
+
+// ======================
+// PAST EVENT MEMORIES MODAL (host side)
+// ======================
+let currentMemoryEventId = null;
+
+const memoriesModal = document.getElementById("memoriesModal");
+const closeMemoriesModalBtn = document.getElementById("closeMemoriesModal");
+
+function openMemoriesModal(event) {
+    currentMemoryEventId = event._id;
+
+    document.getElementById("memorySummary").value = event.pastEvent?.summary || "";
+    document.getElementById("memoryHighlights").value =
+        (event.pastEvent?.highlights || []).join("\n");
+    document.getElementById("memoryPhotos").value =
+        (event.pastEvent?.photos || []).join("\n");
+
+    if (memoriesModal) memoriesModal.hidden = false;
+}
+
+if (closeMemoriesModalBtn) {
+    closeMemoriesModalBtn.addEventListener("click", () => {
+        if (memoriesModal) memoriesModal.hidden = true;
+        currentMemoryEventId = null;
+    });
+}
+
+function collectMemoryPayload() {
+    const summary = document.getElementById("memorySummary").value.trim();
+
+    const highlights = document.getElementById("memoryHighlights").value
+        .split("\n")
+        .map(h => h.trim())
+        .filter(Boolean);
+
+    const photos = document.getElementById("memoryPhotos").value
+        .split("\n")
+        .map(p => p.trim())
+        .filter(Boolean);
+
+    return { summary, highlights, photos };
+}
+
+async function saveMemoryDetails() {
+    const token = localStorage.getItem("token");
+    const payload = collectMemoryPayload();
+
+    const response = await fetch(
+        `${API_BASE}/events/${currentMemoryEventId}/past-details`,
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+        }
+    );
+
+    return response.json().then(data => ({ ok: response.ok, data }));
+}
+
+const saveDraftBtn = document.getElementById("saveDraftBtn");
+if (saveDraftBtn) {
+    saveDraftBtn.addEventListener("click", async () => {
+        try {
+            const { ok, data } = await saveMemoryDetails();
+            showToast(data.message, ok ? "success" : "error");
+
+            if (ok) {
+                memoriesModal.hidden = true;
+                loadHostedEvents();
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("Could not save draft.", "error");
+        }
+    });
+}
+
+const publishBtn = document.getElementById("publishBtn");
+if (publishBtn) {
+    publishBtn.addEventListener("click", async () => {
+        try {
+            const { ok, data } = await saveMemoryDetails();
+
+            if (!ok) {
+                showToast(data.message, "error");
+                return;
+            }
+
+            const token = localStorage.getItem("token");
+
+            const publishResponse = await fetch(
+                `${API_BASE}/events/${currentMemoryEventId}/publish-past`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            const publishData = await publishResponse.json();
+            showToast(publishData.message, publishResponse.ok ? "success" : "error");
+
+            if (publishResponse.ok) {
+                memoriesModal.hidden = true;
+                loadHostedEvents();
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("Could not publish memories.", "error");
+        }
+    });
+}
+
+function viewPastEvent(eventId) {
+    localStorage.setItem("viewPastEventId", eventId);
+    window.location.href = "pastEventDetails.html";
+}
+
+// ======================
+// PAST EVENTS GALLERY (user-facing)
+// ======================
+const pastEventsGrid = document.getElementById("pastEventsGrid");
+
+if (pastEventsGrid) {
+    loadPastEventsGallery();
+}
+
+async function loadPastEventsGallery() {
+    const loader = document.getElementById("pastEventsLoader");
+    const emptyState = document.getElementById("pastEventsEmpty");
+
+    if (loader) loader.style.display = "flex";
+
+    try {
+        const response = await fetch(`${API_BASE}/events/past`);
+        const events = await response.json();
+
+        pastEventsGrid.innerHTML = "";
+
+        if (!events || events.length === 0) {
+            if (emptyState) emptyState.hidden = false;
+            return;
+        }
+
+        if (emptyState) emptyState.hidden = true;
+
+        events.forEach((event, index) => {
+            const card = document.createElement("div");
+            card.className = "event-card past-event-card";
+            card.style.animationDelay = `${index * 80}ms`;
+
+            const coverPhoto = event.pastEvent?.photos?.[0];
+
+            card.innerHTML = `
+                ${coverPhoto ? `<img class="past-event-cover" src="${coverPhoto}" alt="${event.title}">` : ""}
+                <h2>${event.title}</h2>
+                <p><strong>Date:</strong> ${new Date(event.date).toLocaleDateString()}</p>
+                <p><strong>Venue:</strong> ${event.venue}</p>
+                <p>${(event.pastEvent?.summary || "").slice(0, 120)}${(event.pastEvent?.summary || "").length > 120 ? "…" : ""}</p>
+                <button data-event-id="${event._id}">View Memories →</button>
+            `;
+
+            card.querySelector("button").addEventListener("click", () => {
+                localStorage.setItem("viewPastEventId", event._id);
+                window.location.href = "pastEventDetails.html";
+            });
+
+            attachTilt(card);
+            pastEventsGrid.appendChild(card);
+        });
+
+    } catch (error) {
+        console.error(error);
+        showToast("Could not load past events.", "error");
+    } finally {
+        if (loader) loader.style.display = "none";
+    }
+}
+
+// ======================
+// PAST EVENT DETAILS (user-facing single page)
+// ======================
+const pastDetailContainer = document.getElementById("pastDetailContainer");
+
+if (pastDetailContainer) {
+    loadPastEventDetails();
+}
+
+async function loadPastEventDetails() {
+    const loader = document.getElementById("pastDetailLoader");
+    if (loader) loader.style.display = "flex";
+
+    const eventId = localStorage.getItem("viewPastEventId");
+
+    try {
+        const response = await fetch(`${API_BASE}/events/past`);
+        const events = await response.json();
+
+        const event = events.find(e => e._id === eventId);
+
+        if (!event) {
+            pastDetailContainer.innerHTML = "<p>Event memories not found.</p>";
+            return;
+        }
+
+        const photos = event.pastEvent?.photos || [];
+        const highlights = event.pastEvent?.highlights || [];
+
+        pastDetailContainer.innerHTML = `
+            <div class="past-detail-header">
+                <h1>${event.title}</h1>
+                <p><strong>📅</strong> ${new Date(event.date).toLocaleDateString()}</p>
+                <p><strong>📍</strong> ${event.venue}</p>
+                <p><strong>👥 Hosted by</strong> ${event.createdBy?.name || "NexMeet Host"}</p>
+            </div>
+
+            <div class="past-detail-summary">
+                <h2>Event Summary</h2>
+                <p>${event.pastEvent?.summary || ""}</p>
+            </div>
+
+            ${highlights.length > 0 ? `
+                <div class="past-detail-highlights">
+                    <h2>✨ Highlights</h2>
+                    <ul>
+                        ${highlights.map(h => `<li>${h}</li>`).join("")}
+                    </ul>
+                </div>
+            ` : ""}
+
+            ${photos.length > 0 ? `
+                <div class="past-detail-gallery">
+                    <h2>📸 Photo Gallery</h2>
+                    <div class="gallery-grid">
+                        ${photos.map(p => `<img src="${p}" alt="${event.title}">`).join("")}
+                    </div>
+                </div>
+            ` : ""}
+        `;
+
+    } catch (error) {
+        console.error(error);
+        pastDetailContainer.innerHTML = "<p>Could not load event memories.</p>";
+    } finally {
+        if (loader) loader.style.display = "none";
+    }
 }
 
 async function deleteEvent(eventId) {

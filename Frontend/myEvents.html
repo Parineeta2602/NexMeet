@@ -7,15 +7,76 @@
 </head>
 <body>
 
-    <h1>My Hosted Events</h1>
+<nav id="mainNav">
+    <a href="hostDashboard.html" class="logo">✦ NexMeet</a>
+    <a href="host.html" class="nav-link">Host New Event</a>
+</nav>
 
-    <div id="myEventsContainer"></div>
+<h1>My Hosted Events</h1>
 
-    <br>
+<section class="myEventsSection">
+    <h2 class="sectionHeading">Upcoming</h2>
+    <div id="upcomingEventsContainer" class="myEventsGrid"></div>
+    <p class="emptySectionMsg" id="upcomingEmptyMsg" hidden>No upcoming events.</p>
+</section>
 
-    <a href="host.html">Host New Event</a>
+<section class="myEventsSection">
+    <h2 class="sectionHeading">Completed — Add Memories</h2>
+    <div id="completedEventsContainer" class="myEventsGrid"></div>
+    <p class="emptySectionMsg" id="completedEmptyMsg" hidden>No completed events waiting for memories.</p>
+</section>
 
-    <script src="js/app.js"></script>
+<section class="myEventsSection">
+    <h2 class="sectionHeading">Past Events</h2>
+    <div id="pastEventsContainer" class="myEventsGrid"></div>
+    <p class="emptySectionMsg" id="pastEmptyMsg" hidden>No published past events yet.</p>
+</section>
+
+<br>
+
+<a href="host.html">Host New Event</a>
+
+<!-- Add / Edit Memories Modal -->
+<div id="memoriesModal" class="modal-overlay" hidden>
+    <div class="modal-card">
+
+        <button id="closeMemoriesModal" class="modal-close">✕</button>
+
+        <h2>Add Event Memories</h2>
+
+        <label class="modal-label" for="memorySummary">Event Summary</label>
+        <textarea
+            id="memorySummary"
+            placeholder="Tell users about the event..."
+            rows="4"
+        ></textarea>
+
+        <label class="modal-label" for="memoryHighlights">Highlights (one per line)</label>
+        <textarea
+            id="memoryHighlights"
+            placeholder="e.g. 300+ attendees&#10;Keynote by Jane Doe&#10;Live coding workshop"
+            rows="3"
+        ></textarea>
+
+        <label class="modal-label" for="memoryPhotos">Photo URLs (one per line)</label>
+        <textarea
+            id="memoryPhotos"
+            placeholder="https://example.com/photo1.jpg"
+            rows="3"
+        ></textarea>
+        <p class="modal-hint">Paste image links (e.g. from Cloudinary, Imgur, Google Drive share links).</p>
+
+        <div class="modal-actions">
+            <button id="saveDraftBtn" class="btn-secondary" type="button">Save Draft</button>
+            <button id="publishBtn" class="btn-primary" type="button">Publish</button>
+        </div>
+
+    </div>
+</div>
+
+<div id="toastContainer"></div>
+
+<script src="js/app.js"></script>
 
 </body>
 </html>
